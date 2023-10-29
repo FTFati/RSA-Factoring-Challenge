@@ -1,0 +1,55 @@
+#!/usr/bin/python3
+
+import sys
+import time
+import random
+
+
+def _prime(num, k=20):
+    '''RSA Laboratories states that:
+    for each RSA number n,
+    there exist prime numbers p and q such that'''
+
+    if num == 2 or num == 3:
+        return True
+    if num < 2 or num % 2 == 0:
+        return false
+    num2 = num - 1
+    count = 0
+    while num2 % 2 == 0:
+        num2 //= 2
+        count += 1
+    for i in range(k):
+        a = random.randint(2, num - 2)
+        x = pow(a, num2, num)
+        if x == 1 or x == num - 1:
+            continue
+        for j in range(count - 1):
+            x = pow(x, 2, num)
+            if x == num - 1:
+                break
+            else:
+                return False
+    return True
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: rsa <file>")
+        exit()
+    input_file = sys.argv[1]
+    try:
+        with open(input_file, 'r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        print("File not found")
+        exit()
+    start_time = time.time()
+    num = int(lines[0].strip())
+    for i in range(2, num//2):
+        if num % i == 0 and _prime(i) and _prime(num//i):
+            print(f"{num}={i}*{num//i}")
+            break
+        if time.time() - start_time > 5:
+            print("Time limit")
+            exit()
